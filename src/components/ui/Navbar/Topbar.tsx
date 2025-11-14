@@ -1,10 +1,12 @@
 "use client";
 import React from "react";
+import { RiNotification3Line } from "react-icons/ri";
+import { SlCalender } from "react-icons/sl";
 
 export default function TopBar() {
   return (
     <nav className="bg-white sticky w-full px-4 top-0">
-      <div className=" py-3 md:py-4 flex items-center w-full justify-between">
+      <div className="py-3 md:py-4 flex items-center w-full justify-between">
         {/* Left - Mobile Menu Icon */}
         <button
           //   onClick={onMenuClick}
@@ -14,37 +16,25 @@ export default function TopBar() {
         </button>
 
         {/* Right - Notifications & Static User */}
-        <div className="flex items-center border border-y-amber-300 gap-4">
+        <div className="flex items-center gap-6">
           {/* Static Notification Icon */}
-          <button className="relative cursor-pointer rounded-full h-10 w-10 flex items-center justify-center">
-            {/* <Bell className="h-5 w-5 text-gray-600" /> */}Notification
-            {/* <Badge
-              variant="destructive"
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-xs p-0"
-            >
-              3
-            </Badge> */}
+          <button className="relative cursor-pointer bg-[#5272FF] h-9 w-9 rounded-[10px] flex items-center justify-center">
+            <RiNotification3Line className="p-[9px] w-full h-full text-white" />
+          </button>
+          <button className="relative cursor-pointer bg-[#5272FF] h-9 w-9 rounded-[10px] flex items-center justify-center">
+            <SlCalender className="p-[9px] w-full h-full text-white" />
           </button>
 
           {/* Static User Avatar + Info */}
-          <div className="flex items-center gap-2 cursor-pointer select-none">
-            {/* <Avatar className="h-10 w-10">
-              <AvatarImage
-                src="/images/static-user.png"
-                alt="User Avatar"
-                className="rounded-full"
-              />
-              <AvatarFallback>U</AvatarFallback>
-            </Avatar> */}
-
-            <div className="hidden md:flex flex-col items-start select-none">
-              <span className="text-sm font-medium text-gray-900">
-                John Doe
-              </span>
-              <span className="text-xs text-gray-500 capitalize">admin</span>
-            </div>
-
-            {/* <ChevronDown className="h-4 w-4 text-gray-500" /> */}
+          <div>
+            <p>{new Date().toLocaleDateString("en-US", { weekday: "long" })}</p>{" "}
+            <p className="text-[#oD224A]">
+              {new Date().getDate().toString().padStart(2, "0") +
+                "-" +
+                (new Date().getMonth() + 1).toString().padStart(2, "0") +
+                "-" +
+                new Date().getFullYear()}
+            </p>
           </div>
         </div>
       </div>
