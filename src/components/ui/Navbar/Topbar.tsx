@@ -1,22 +1,22 @@
 "use client";
 import React from "react";
 
-export default function Topbar() {
+export default function TopBar() {
   return (
-    <nav className="bg-white">
-      <div className="px-4 py-3 md:py-4 flex items-center justify-between">
+    <nav className="bg-white sticky w-full px-4 top-0">
+      <div className=" py-3 md:py-4 flex items-center w-full justify-between">
         {/* Left - Mobile Menu Icon */}
         <button
           //   onClick={onMenuClick}
-          className="text-gray-600 cursor-pointer hover:text-gray-800 md:hidden"
+          className="text-gray-600 cursor-pointer hover:text-gray-800"
         >
           {/* <HiMenuAlt2 className="h-6 w-6" /> */}Menu Icon
         </button>
 
         {/* Right - Notifications & Static User */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center border border-y-amber-300 gap-4">
           {/* Static Notification Icon */}
-          <button className="relative cursor-pointer border rounded-full h-10 w-10 flex items-center justify-center">
+          <button className="relative cursor-pointer rounded-full h-10 w-10 flex items-center justify-center">
             {/* <Bell className="h-5 w-5 text-gray-600" /> */}Notification
             {/* <Badge
               variant="destructive"

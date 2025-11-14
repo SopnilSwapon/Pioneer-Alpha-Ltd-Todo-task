@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import "./globals.css";
 import QueryProvider from "@/components/ui/providers/QueryProvider";
@@ -16,10 +15,14 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="antialiased max-w-[1320px] px-4 md:px-6 mx-auto font-sans">
+      <body className="antialiased max-w-[1320px] relative px-4 md:px-6 mx-auto font-sans">
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>

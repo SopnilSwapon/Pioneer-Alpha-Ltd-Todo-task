@@ -26,11 +26,11 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="w-72 h-screen bg-[#0D224A] flex flex-col">
+    <div className="w-72 h-screen bg-[#0D224A] flex justify-between flex-col">
       {/* Header */}
       <div className="py-5 px-3 flex justify-between items-center mt-2">
         <div>
-          {/* <h1 className="text-2xl font-bold text-[#19CA32]">simplymot.co.uk</h1> */}
+          <h1 className="text-2xl font-bold text-[#19CA32]">simplymot.co.uk</h1>
         </div>
         <button
           //   onClick={onClose}

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -26,6 +25,7 @@ export default function Page() {
   });
 
   const onSubmit = (data: any) => {
+    router.push("/dashboard");
     mutation.mutate(data);
   };
 
