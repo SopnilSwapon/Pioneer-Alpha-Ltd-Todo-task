@@ -1,14 +1,26 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { toast } from "react-toastify";
+import Image from "next/image";
+
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import Image from "next/image";
 import { login } from "@/lib/api/auth";
-import { useRouter } from "next/navigation";
 import { Heading1 } from "@/components/ui/Header1";
-import Link from "next/link";
+
+interface ILoginFormData {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+interface ILoginResponse {
+  access: string;
+  refresh: string;
+}
 
 export default function Page() {
   const router = useRouter();
@@ -16,22 +28,46 @@ export default function Page() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
-  } = useForm();
+  } = useForm<ILoginFormData>();
 
   const mutation = useMutation({
     mutationFn: login,
-    onSuccess: () => router.push("/dashboard"),
+    onError: (error) => {
+      // Set Error for wrong Credential
+      if (
+        error.message === "No active account found with the given credentials"
+      ) {
+        setError(
+          "email",
+          {
+            message: "Email or password incorrect",
+          },
+          { shouldFocus: true }
+        );
+        setError("password", {
+          message: "Email or password incorrect",
+        });
+      }
+      toast.error(error.message || "Something is wrong");
+    },
+
+    onSuccess: (data: ILoginResponse) => {
+      localStorage.setItem("access_token", data.access);
+      router.push("/dashboard");
+      toast.success("Login successful");
+    },
   });
 
-  const onSubmit = (data: any) => {
-    router.push("/dashboard");
-    mutation.mutate(data);
+  const onSubmit = (data: ILoginFormData) => {
+    const { email, password } = data;
+    mutation.mutate({ email, password });
   };
 
   return (
     <div className="min-h-screen flex">
-      {/* LEFT IMAGE */}
+      {/*Left side login image */}
       <div className="w-1/2 bg-blue-50 flex items-center justify-center">
         <Image
           src="/images/loginLogo.png"
@@ -41,7 +77,7 @@ export default function Page() {
         />
       </div>
 
-      {/* RIGHT FORM */}
+      {/*Right side Login form */}
       <div className="w-1/2 flex items-center justify-center px-10">
         <div className="w-full max-w-md">
           <Heading1 title="Log in to your account" className="text-center" />
@@ -65,9 +101,7 @@ export default function Page() {
               error={errors.password?.message as string}
             />
 
-            {/* Remember Me + Forgot Password */}
             <div className="flex items-center justify-between">
-              {/* Remember Me */}
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"

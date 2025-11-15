@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import QueryProvider from "@/components/ui/providers/QueryProvider";
 import { Inter } from "next/font/google";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "My Todos App",
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body className="antialiased max-w-[1320px] relative px-4 md:px-6 mx-auto font-sans">
         <QueryProvider>{children}</QueryProvider>
+        <ToastContainer />
       </body>
     </html>
   );

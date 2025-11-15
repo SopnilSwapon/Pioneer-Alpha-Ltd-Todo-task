@@ -1,18 +1,24 @@
 "use client";
+import Image from "next/image";
 import React from "react";
 import { RiNotification3Line } from "react-icons/ri";
 import { SlCalender } from "react-icons/sl";
 
 export default function TopBar() {
   return (
-    <nav className="bg-white sticky w-full px-4 top-0">
+    <nav className="bg-white sticky w-full px-6 md:px-8 top-0">
       <div className="py-3 md:py-4 flex items-center w-full justify-between">
         {/* Left - Mobile Menu Icon */}
         <button
           //   onClick={onMenuClick}
           className="text-gray-600 cursor-pointer hover:text-gray-800"
         >
-          {/* <HiMenuAlt2 className="h-6 w-6" /> */}Menu Icon
+          <Image
+            src="/images/logo.png"
+            height={100}
+            width={100}
+            alt="project logo"
+          />
         </button>
 
         {/* Right - Notifications & Static User */}
