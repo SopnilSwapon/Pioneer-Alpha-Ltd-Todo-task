@@ -1,10 +1,12 @@
-import { TokenService } from "@/lib/auth/token";
+import { TokenService } from "./auth/token";
+import { refreshAccessToken } from "./auth/refresh";
+import { globalLogout } from "./auth/logout";
 
 export type TFetchError = {
   detail?: string;
   message?: string;
   statusCode?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 interface IFetchProps {
@@ -22,22 +24,27 @@ export default async function Fetch<T>({
   body,
   multipart,
   abortController,
-  headers: customHeaders = {},
+  headers: custom = {},
 }: IFetchProps): Promise<T> {
-  const headers: HeadersInit = {
-    ...customHeaders,
-  };
-
   const access = TokenService.getAccess();
-
   const isAuthURL =
-    url.includes("/auth/login") || url.includes("/users/signup");
+    url.includes("/auth/login") ||
+    url.includes("/auth/refresh") ||
+    url.includes("/users/signup");
 
+  const headers: HeadersInit = { ...custom };
+
+  // 🚨 Missing tokens
+  if (!access && !isAuthURL) {
+    globalLogout();
+  }
+
+  // Include access token
   if (access && !isAuthURL) {
     headers["Authorization"] = `Bearer ${access}`;
   }
 
-  // Normal JSON requests
+  // JSON
   if (!multipart) {
     headers["Content-Type"] = "application/json";
   }
@@ -53,7 +60,19 @@ export default async function Fetch<T>({
       : undefined,
   };
 
-  const response = await fetch(url, options);
+  let response = await fetch(url, options);
+
+  // 🚨 Access token expired → try refresh
+  if (response.status === 401 && !isAuthURL) {
+    const newAccess = await refreshAccessToken();
+
+    if (!newAccess) {
+      globalLogout();
+    }
+
+    headers["Authorization"] = `Bearer ${newAccess}`;
+    response = await fetch(url, options);
+  }
 
   const text = await response.text();
   let data: unknown;
@@ -64,13 +83,17 @@ export default async function Fetch<T>({
     data = text;
   }
 
-  // ERROR HANDLING
   if (!response.ok) {
-    const err: TFetchError = {
+    const error: TFetchError = {
       ...(typeof data === "object" && data !== null ? data : {}),
       statusCode: response.status,
     };
-    throw err;
+
+    if (error.statusCode === 401) {
+      globalLogout();
+    }
+
+    throw error;
   }
 
   return data as T;

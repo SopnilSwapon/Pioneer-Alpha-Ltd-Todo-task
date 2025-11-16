@@ -5,14 +5,20 @@ type TInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
 };
 
-export default function Input({ label, error, ...props }: TInputProps) {
+export default function Input({
+  label,
+  error,
+  className,
+  ...props
+}: TInputProps) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-black mb-1.5">{label}</label>
+      <label className="text-sm font-medium text-black">{label}</label>
       <input
         {...props}
-        className={`w-full rounded-md border px-3 py-2.5 text-sm border-gray-300 focus:border-blue-500"
-        focus:outline-none`}
+        className={`w-full rounded-md border px-3 py-2.5 text-sm border-gray-300 focus:border-blue-500 focus:outline-none ${
+          className ?? ""
+        }`}
       />
       {error && <p className="text-xs text-[#EE0039]">{error}</p>}
     </div>
