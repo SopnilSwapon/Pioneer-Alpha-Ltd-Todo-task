@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Fetch, { TFetchError } from "@/shared/lib/Fetch";
 import { UseFormSetError } from "react-hook-form";
+import { QK_ALL_TODOS } from "./useAllTask";
 
 export interface IAddTodoPayload {
   title: string;
@@ -26,7 +27,7 @@ export function useAddTodo(setError: UseFormSetError<IAddTodoPayload>) {
     onSuccess: (data) => {
       console.log(data, "check data");
       // Re-fetch todo list
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
+      queryClient.invalidateQueries({ queryKey: [QK_ALL_TODOS] });
     },
 
     onError: (error: TFetchError) => {

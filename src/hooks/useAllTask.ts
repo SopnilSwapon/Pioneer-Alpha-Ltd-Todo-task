@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import Fetch from "@/shared/lib/Fetch";
 
+interface IParams {
+  search?: string;
+}
 export interface ITodo {
   id: number;
   title: string;
@@ -8,6 +11,7 @@ export interface ITodo {
   todo_date: string;
   priority: string;
   is_completed: boolean;
+  updated_at: string;
 }
 
 export interface ITodoResponse {
@@ -16,16 +20,15 @@ export interface ITodoResponse {
   results: ITodo[];
 }
 export const QK_ALL_TODOS = "all_todos";
-function buildQueryString(params: ITodoParams) {
+function buildQueryString(params: IParams) {
   const qs = new URLSearchParams();
 
   if (params.search) qs.append("search", params.search);
-  if (params.todo_date) qs.append("todo_date", params.todo_date);
 
   return qs.toString();
 }
 
-export default function useAllTodos(params: ITodoParams) {
+export default function useAllTodos(params: IParams) {
   const queryString = buildQueryString(params);
 
   return useQuery({

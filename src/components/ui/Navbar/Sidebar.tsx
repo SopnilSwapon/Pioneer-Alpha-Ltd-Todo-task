@@ -30,7 +30,6 @@ export default function Sidebar() {
       icon: <FaUserLarge />,
     },
   ];
-
   return (
     <div className="w-72 h-screen bg-[#0D224A] flex justify-between flex-col">
       <div className="py-5 px-3">
@@ -39,19 +38,21 @@ export default function Sidebar() {
             {isLoading ? (
               <div className="w-20 h-20 rounded-full bg-gray-400 animate-pulse"></div>
             ) : (
-              <div className="relative">
+              <div>
                 {data?.profile_image ? (
-                  <Image
-                    src={data.profile_image}
-                    alt="profile picture"
-                    height={80}
-                    width={80}
-                    className="rounded-full object-cover"
-                  />
+                  <>
+                    <Image
+                      src={data.profile_image}
+                      alt="profile picture"
+                      height={80}
+                      width={80}
+                      className="rounded-full object-cover"
+                    />
+                  </>
                 ) : (
                   <Link
                     href="/dashboard/account-information"
-                    className="absolute inset-0 flex cursor-pointer justify-center items-center bg-black/40 rounded-full"
+                    className=" inset-0 p-6 border rounded-full flex cursor-pointer justify-center items-center"
                   >
                     <FaPlus className="text-white left-20" size={22} />
                   </Link>
