@@ -48,7 +48,7 @@ export default function DeleteTodoModal({ open, onClose, onConfirm }: IProps) {
 
               <div className="flex justify-center gap-4 mt-5">
                 <Button
-                  className="bg-gray-300 text-black hover:bg-gray-400"
+                  className="bg-gray-400 hover:bg-gray-500"
                   onClick={onClose}
                 >
                   Cancel

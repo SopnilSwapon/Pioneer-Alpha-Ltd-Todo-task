@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { useUpdateProfile } from "@/hooks/useUpdateProfile";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import Link from "next/link";
 
 interface IProfileForm {
   first_name: string;
@@ -75,7 +76,7 @@ export default function Page() {
           )}
         </div>
 
-        <label className="cursor-pointer px-5 py-2 rounded-md bg-[#5272FF] text-white flex items-center gap-2">
+        <label className="cursor-pointer px-5 py-2 rounded-md bg-[#5272FF] hover:bg-blue-600 text-white flex items-center gap-2">
           Upload New Photo
           <input
             type="file"
@@ -140,9 +141,12 @@ export default function Page() {
             Save Changes
           </Button>
 
-          <Button className="max-w-44 py-2 cursor-pointer rounded-md bg-[#8CA3CD]! text-black">
+          <Link
+            href={"/dashboard"}
+            className="w-44 p-2 text-center text-white cursor-pointer rounded-md bg-gray-400 hover:bg-gray-500"
+          >
             Cancel
-          </Button>
+          </Link>
         </div>
       </form>
     </div>
