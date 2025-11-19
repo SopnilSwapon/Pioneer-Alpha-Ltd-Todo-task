@@ -7,6 +7,7 @@ import {
 import { TFetchError } from "@/shared/lib/Fetch";
 import { UseFormSetError } from "react-hook-form";
 import { QK_USER_PROFILE_INFO } from "./useGetProfileInfo";
+import { toast } from "react-toastify";
 
 export function useUpdateProfile(
   setError: UseFormSetError<IUpdateProfilePayload>
@@ -70,7 +71,6 @@ export function useUpdateProfile(
 
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [QK_USER_PROFILE_INFO] });
-        console.log("Profile updated successfully");
       },
     }
   );

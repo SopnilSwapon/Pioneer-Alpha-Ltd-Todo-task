@@ -17,7 +17,7 @@ export function useAddTodo(setError: UseFormSetError<IAddTodoPayload>) {
     mutationFn: async (payload: IAddTodoPayload) => {
       return Fetch({
         method: "POST",
-        url: "https://todo-app.pioneeralpha.com/api/todos/",
+        url: `${process.env.NEXT_PUBLIC_API_URL}/api/todos/`,
         body: payload,
       });
     },

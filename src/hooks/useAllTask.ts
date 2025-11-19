@@ -38,7 +38,7 @@ export default function useAllTodos(params: IParams) {
     queryFn: async () =>
       await Fetch<ITodoResponse>({
         method: "GET",
-        url: `https://todo-app.pioneeralpha.com/api/todos/?${queryString}`,
+        url: `${process.env.NEXT_PUBLIC_API_URL}/api/todos/?${queryString}`,
       }),
   });
 }

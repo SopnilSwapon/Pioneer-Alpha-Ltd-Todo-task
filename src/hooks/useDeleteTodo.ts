@@ -9,7 +9,7 @@ export function useDeleteTodo() {
     mutationFn: async (id: number) => {
       return Fetch({
         method: "DELETE",
-        url: `https://todo-app.pioneeralpha.com/api/todos/${id}/`,
+        url: `${process.env.NEXT_PUBLIC_API_URL}/api/todos/${id}/`,
       });
     },
     onSuccess: () => {

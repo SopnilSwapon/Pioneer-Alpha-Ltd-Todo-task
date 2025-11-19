@@ -21,7 +21,7 @@ export default function useGetProfileInfo() {
     queryFn: async () =>
       await Fetch<IUserInfo>({
         method: "GET",
-        url: `https://todo-app.pioneeralpha.com/api/users/me/`,
+        url: `${process.env.NEXT_PUBLIC_API_URL}/api/users/me/`,
       }),
   });
 }

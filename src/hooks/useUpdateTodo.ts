@@ -18,7 +18,7 @@ export function useUpdateTodo() {
       const { id, ...payload } = data;
       return Fetch({
         method: "PATCH",
-        url: `https://todo-app.pioneeralpha.com/api/todos/${id}/`,
+        url: `${process.env.NEXT_PUBLIC_API_URL}/api/todos/${id}/`,
         body: payload,
       });
     },

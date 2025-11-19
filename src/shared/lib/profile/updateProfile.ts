@@ -24,7 +24,7 @@ export async function updateProfile(
 
   const response = await Fetch<IUpdateProfilePayload>({
     method: "PATCH",
-    url: "https://todo-app.pioneeralpha.com/api/users/me/",
+    url: `${process.env.NEXT_PUBLIC_API_URL}/api/users/me/`,
     body: formData,
     multipart: true,
   });
