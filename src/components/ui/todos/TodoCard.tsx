@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ITodo } from "@/hooks/useAllTask";
 import { LuPencilLine } from "react-icons/lu";
 import { MdOutlineDeleteOutline } from "react-icons/md";
+
 import DeleteTodoModal from "./DeleteTodoModal";
 import EditTodoModal from "./EditTodoModal";
 import { useDeleteTodo } from "@/hooks/useDeleteTodo";
@@ -11,7 +12,14 @@ import { toast } from "react-toastify";
 
 type TPriority = "high" | "extreme" | "moderate" | "low";
 
-export default function TodoCard({ todo }: { todo: ITodo }) {
+export default function TodoCard({
+  todo,
+  dragProps,
+}: {
+  todo: ITodo;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dragProps?: any;
+}) {
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
 
@@ -39,13 +47,16 @@ export default function TodoCard({ todo }: { todo: ITodo }) {
 
   return (
     <>
-      <div className="bg-white border border-gray-200 rounded-xl p-5 relative w-full">
+      {/* Entire card draggable */}
+      <div
+        {...dragProps}
+        className="bg-white border border-gray-200 rounded-xl p-5 relative w-full cursor-grab active:cursor-grabbing select-none"
+      >
         {/* Priority */}
         {todo.priority && (
           <span
             className={`absolute top-4 right-4 px-3 py-1 text-xs font-semibold rounded-md ${
-              priorityColors[todo.priority as TPriority] ??
-              "bg-gray-100 text-gray-700"
+              priorityColors[todo.priority as TPriority]
             }`}
           >
             {todo.priority}
@@ -72,16 +83,19 @@ export default function TodoCard({ todo }: { todo: ITodo }) {
           </p>
 
           <div className="flex items-center gap-3">
+            {/* STOP PROPAGATION so drag doesn't effect to open delete & edit modal opening */}
             <button
+              onPointerDown={(e) => e.stopPropagation()}
               onClick={() => setOpenEdit(true)}
-              className="bg-foreground cursor-pointer p-1.5 rounded-lg text-[#4F46E5]"
+              className="bg-gray-50 p-1.5 cursor-pointer rounded-lg text-[#4F46E5]"
             >
               <LuPencilLine size={20} />
             </button>
 
             <button
+              onPointerDown={(e) => e.stopPropagation()}
               onClick={() => setOpenDelete(true)}
-              className="bg-foreground cursor-pointer p-1.5 rounded-lg text-[#DC2626]"
+              className="bg-gray-50 p-1.5 cursor-pointer rounded-lg text-[#DC2626]"
             >
               <MdOutlineDeleteOutline size={20} />
             </button>

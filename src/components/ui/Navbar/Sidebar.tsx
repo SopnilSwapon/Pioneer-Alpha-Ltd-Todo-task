@@ -3,7 +3,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { RiLogoutBoxRLine } from "react-icons/ri";
-import Image from "next/image";
 import { AiFillHome } from "react-icons/ai";
 import { BiTask } from "react-icons/bi";
 import { FaPlus, FaUserLarge } from "react-icons/fa6";
@@ -44,13 +43,19 @@ export default function Sidebar() {
               <div>
                 {data?.profile_image ? (
                   <>
-                    <Image
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={data?.profile_image}
+                      alt="profile"
+                      className="rounded-full object-cover w-20 h-20"
+                    />
+                    {/* <Image
                       src={data.profile_image}
                       alt="profile picture"
                       height={80}
                       width={80}
                       className="rounded-full object-cover"
-                    />
+                    /> */}
                   </>
                 ) : (
                   <Link

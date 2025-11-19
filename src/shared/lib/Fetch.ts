@@ -1,5 +1,3 @@
-"use client";
-
 import { TokenService } from "./auth/token";
 import { refreshAccessToken } from "./auth/refresh";
 import { globalLogout } from "./auth/logout";
@@ -31,7 +29,7 @@ export default async function Fetch<T>({
 }: IFetchProps): Promise<T> {
   const access = TokenService.getAccess();
 
-  // Routes that should not force logout
+  //public Routes api fetch
   const isAuthURL =
     url.includes("/auth/login") ||
     url.includes("/auth/refresh") ||
@@ -39,7 +37,7 @@ export default async function Fetch<T>({
 
   const headers: HeadersInit = { ...custom };
 
-  // 🔥 1. No token on protected routes → logout & redirect
+  //  No token on protected routes logout & redirect
   if (!access && !isAuthURL) {
     globalLogout(); // safe logout
     return Promise.reject({
@@ -53,12 +51,10 @@ export default async function Fetch<T>({
     headers["Authorization"] = `Bearer ${access}`;
   }
 
-  // Default JSON headers
   if (!multipart) {
     headers["Content-Type"] = "application/json";
   }
 
-  // Request config
   const options: RequestInit = {
     method,
     headers,
@@ -70,16 +66,15 @@ export default async function Fetch<T>({
       : undefined,
   };
 
-  // First request
   let response = await fetch(url, options);
 
-  // 🔥 2. Token expired → refresh token
+  // Token expired try to fetch by generate by making new token
   if (response.status === 401 && !isAuthURL) {
     const newAccess = await refreshAccessToken();
 
     if (!newAccess) {
       TokenService.clear();
-      globalLogout(); // safe logout
+      globalLogout();
       return Promise.reject({
         detail: "Session expired",
         statusCode: 401,
@@ -92,7 +87,6 @@ export default async function Fetch<T>({
     response = await fetch(url, options);
   }
 
-  // Parse response
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let data: any;
   try {
