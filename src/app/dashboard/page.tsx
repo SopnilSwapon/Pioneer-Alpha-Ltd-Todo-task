@@ -1,14 +1,17 @@
 "use client";
 
-import useGetProfileInfo from "@/hooks/useGetProfileInfo";
+import { useState } from "react";
+import useGetProfileInfo from "@/hooks/profile/useGetProfileInfo";
 import Image from "next/image";
-import Link from "next/link";
 import Button from "@/components/ui/Button";
-import { BiSolidEdit } from "react-icons/bi";
+import Link from "next/link";
 import { FaUserEdit } from "react-icons/fa";
+import ChangePasswordModal from "@/components/ui/ChangePasswordModal"; // <-- import it
+import { FaCamera } from "react-icons/fa6";
 
 export default function Page() {
   const { data, isLoading } = useGetProfileInfo();
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -36,57 +39,75 @@ export default function Page() {
   const profile = data;
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm">
-      {/* Top Section */}
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-        <div className="relative w-28 h-28 rounded-full bg-gray-200 overflow-hidden">
-          {profile?.profile_image ? (
-            <Image
-              src={profile.profile_image}
-              alt="Profile Image"
-              fill
-              className="object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
-              No Image
+    <>
+      <div className="bg-white rounded-2xl h-auto md:h-[calc(100vh-136px)] p-4 md:p-6 shadow-sm">
+        {/* Top Section */}
+        <div className="flex flex-col relative items-center md:items-start justify-end gap-6">
+          <div className=" w-28 h-28 rounded-full bg-gray-200 overflow-hidden">
+            {profile?.profile_image ? (
+              <Image
+                src={profile.profile_image}
+                alt="Profile Image"
+                height={80}
+                width={80}
+                className="object-cover w-full h-full rounded-full"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+                No Image
+              </div>
+            )}
+            {!profile?.profile_image && (
+              <Link
+                href={"/dashboard/account-information"}
+                className="absolute top-21 ml-18 bg-[#5272FF] p-1.5 rounded-full text-white cursor-pointer"
+              >
+                <FaCamera size={14} />
+              </Link>
+            )}
+          </div>
+
+          <div>
+            <h1 className="text-2xl text-center md:text-start font-semibold text-gray-900">
+              {profile?.first_name} {profile?.last_name}
+            </h1>
+            <p className="text-gray-500 mt-1 text-center md:text-start">
+              {profile?.email}
+            </p>
+
+            <div className="flex gap-3 mt-4">
+              <Link href="/dashboard/account-information">
+                <Button className="px-5 py-2 flex items-center gap-1.5">
+                  <FaUserEdit size={20} /> Edit Profile
+                </Button>
+              </Link>
+
+              <button
+                onClick={() => setIsPasswordModalOpen(true)}
+                className="px-5 py-2 cursor-pointer rounded-md bg-[#5272FF] hover:bg-blue-600 text-white flex items-center justify-center"
+              >
+                Change Password
+              </button>
             </div>
-          )}
-        </div>
-
-        <div className="flex-1">
-          <h1 className="text-2xl font-semibold text-gray-900">
-            {profile?.first_name} {profile?.last_name}
-          </h1>
-          <p className="text-gray-500 mt-1">{profile?.email}</p>
-
-          <div className="flex gap-3 mt-4">
-            <Link href="/dashboard/account-information">
-              <Button className="px-5 py-2 flex items-center gap-1.5">
-                <FaUserEdit size={20} /> Edit Profile
-              </Button>
-            </Link>
-
-            <Link
-              href="/profile/change-password"
-              className="px-5 py-2 rounded-md bg-[#5272FF] hover:bg-blue-600 text-white flex items-center justify-center"
-            >
-              Change Password
-            </Link>
           </div>
         </div>
+
+        {/* Information Grid */}
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InfoItem label="First Name" value={profile?.first_name} />
+          <InfoItem label="Last Name" value={profile?.last_name} />
+          <InfoItem label="Contact Number" value={profile?.contact_number} />
+          <InfoItem label="Birthday" value={profile?.birthday} />
+          <InfoItem label="Address" value={profile?.address} />
+          <InfoItem label="Bio" value={profile?.bio} />
+        </div>
       </div>
 
-      {/* Information Grid */}
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <InfoItem label="First Name" value={profile?.first_name} />
-        <InfoItem label="Last Name" value={profile?.last_name} />
-        <InfoItem label="Contact Number" value={profile?.contact_number} />
-        <InfoItem label="Birthday" value={profile?.birthday} />
-        <InfoItem label="Address" value={profile?.address} />
-        <InfoItem label="Bio" value={profile?.bio} />
-      </div>
-    </div>
+      <ChangePasswordModal
+        open={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
+    </>
   );
 }
 

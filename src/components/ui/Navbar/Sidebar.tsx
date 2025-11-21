@@ -5,10 +5,11 @@ import { usePathname } from "next/navigation";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import { AiFillHome } from "react-icons/ai";
 import { BiTask } from "react-icons/bi";
-import { FaPlus, FaUserLarge } from "react-icons/fa6";
+import { FaCamera, FaUserLarge } from "react-icons/fa6";
 
-import useGetProfileInfo from "@/hooks/useGetProfileInfo";
+import useGetProfileInfo from "@/hooks/profile/useGetProfileInfo";
 import { globalLogout } from "@/shared/lib/auth/logout";
+import Image from "next/image";
 
 export default function Sidebar({ closeMobile }: { closeMobile?: () => void }) {
   const pathname = usePathname();
@@ -34,20 +35,25 @@ export default function Sidebar({ closeMobile }: { closeMobile?: () => void }) {
             {isLoading ? (
               <div className="w-20 h-20 rounded-full bg-gray-400 animate-pulse" />
             ) : data?.profile_image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={data.profile_image}
-                alt="profile"
-                className="rounded-full w-20 h-20 object-cover"
-              />
-            ) : (
-              <Link
-                href="/dashboard/account-information"
-                onClick={closeMobile}
-                className="w-20 h-20 border rounded-full flex items-center justify-center"
-              >
-                <FaPlus className="text-white" size={22} />
+              <Link href={"/dashboard"}>
+                <Image
+                  src={data.profile_image}
+                  height={80}
+                  width={80}
+                  alt="profile"
+                  className="rounded-full w-20 h-20 object-cover"
+                />
               </Link>
+            ) : (
+              <div className="w-24 h-24 border border-white rounded-full flex items-center justify-center">
+                <p className="text-white">No image</p>
+                <Link
+                  href={"/dashboard/account-information"}
+                  className="absolute top-16 ml-18 bg-[#5272FF] p-1.5 rounded-full text-white cursor-pointer"
+                >
+                  {!data?.profile_image && <FaCamera size={14} />}
+                </Link>
+              </div>
             )}
           </div>
 

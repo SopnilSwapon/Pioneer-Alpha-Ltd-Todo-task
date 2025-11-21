@@ -10,8 +10,11 @@ import { FaCamera, FaUpload } from "react-icons/fa6";
 
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import { useUpdateProfile } from "@/hooks/useUpdateProfile";
-import useGetProfileInfo from "@/hooks/useGetProfileInfo"; // <-- ADD THIS
+import useGetProfileInfo, {
+  QK_USER_PROFILE_INFO,
+} from "@/hooks/profile/useGetProfileInfo"; // <-- ADD THIS
+import { useUpdateProfile } from "@/hooks/profile/useUpdateProfile";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface IProfileForm {
   first_name: string;
@@ -39,6 +42,7 @@ export default function Page() {
   } = useForm<IProfileForm>();
 
   const mutation = useUpdateProfile(setError);
+  const queryClient = useQueryClient();
 
   //  Set default values by current user profile data
   useEffect(() => {
@@ -75,7 +79,11 @@ export default function Page() {
           reset();
         },
         onSuccess: () => {
-          toast.success("Profile updated successfully");
+          queryClient.invalidateQueries({
+            queryKey: [QK_USER_PROFILE_INFO],
+          });
+
+          toast.success("Profile updated successfully!");
           router.push("/dashboard");
         },
       }
@@ -90,20 +98,22 @@ export default function Page() {
 
       {/* Profile Photo */}
       <div className="flex flex-col sm:flex-row items-center relative gap-6 mb-8 border rounded-2xl p-4 border-[#A1A3ABA1] md:p-6 max-w-[414px]">
-        <div className="w-32 h-32 bg-gray-300 rounded-full overflow-hidden relative">
+        <div className="w-32 h-32 bg-gray-300 rounded-full overflow-hidden">
           {preview ? (
             <Image
               src={preview}
               alt="Profile"
-              fill
-              className="object-cover rounded-full"
+              height={80}
+              width={80}
+              className="object-cover w-full h-full rounded-full"
             />
           ) : profile?.profile_image ? (
             <Image
               src={profile.profile_image}
               alt="Profile"
-              fill
-              className="object-cover"
+              height={80}
+              width={80}
+              className="object-cover w-full h-full rounded-full"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
@@ -111,14 +121,16 @@ export default function Page() {
             </div>
           )}
 
-          <label className="absolute bottom-1 right-1 bg-[#5272FF] p-2 rounded-full text-white cursor-pointer">
-            {!profile?.profile_image && <FaCamera size={16} />}
-            <input
-              type="file"
-              className="hidden"
-              onChange={handleImageSelect}
-            />
-          </label>
+          {!profile?.profile_image && (
+            <label className="absolute bottom-20 sm:bottom-6 ml-22 bg-[#5272FF] p-2 rounded-full text-white cursor-pointer">
+              <FaCamera size={16} />
+              <input
+                type="file"
+                className="hidden"
+                onChange={handleImageSelect}
+              />
+            </label>
+          )}
         </div>
 
         <label className="cursor-pointer px-5 py-2 rounded-md bg-[#5272FF] hover:bg-blue-600 text-white flex items-center gap-2">

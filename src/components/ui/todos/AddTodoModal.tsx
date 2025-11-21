@@ -1,6 +1,5 @@
 "use client";
 
-import { IAddTodoPayload, useAddTodo } from "@/hooks/useAddTodo";
 import {
   Dialog,
   DialogPanel,
@@ -14,6 +13,7 @@ import { toast } from "react-toastify";
 import Button from "../Button";
 import Input from "../Input";
 import { Heading1 } from "../Header1";
+import { IAddTodoPayload, useAddTodo } from "@/hooks/todos/useAddTodo";
 
 interface IProps {
   open: boolean;
@@ -158,13 +158,13 @@ export default function AddTodoModal({ open, onClose }: IProps) {
                 </div>
 
                 <div className="flex gap-3 mt-5">
-                  <Button className="w-22!" type="submit" loading={isPending}>
+                  <Button className="w-24!" type="submit" loading={isPending}>
                     Done
                   </Button>
 
                   <Button
                     type="button"
-                    className="bg-red-500 w-22! hover:bg-red-600"
+                    className="bg-red-500 w-24! hover:bg-red-600"
                     onClick={onClose}
                   >
                     Close

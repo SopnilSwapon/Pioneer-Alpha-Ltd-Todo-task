@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { ITodo } from "@/hooks/useAllTask";
+import { ITodo, QK_ALL_TODOS } from "@/hooks/todos/useAllTask";
 import { LuPencilLine } from "react-icons/lu";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 
 import DeleteTodoModal from "./DeleteTodoModal";
 import EditTodoModal from "./EditTodoModal";
-import { useDeleteTodo } from "@/hooks/useDeleteTodo";
 import { toast } from "react-toastify";
+import { useDeleteTodo } from "@/hooks/todos/useDeleteTodo";
+import { useQueryClient } from "@tanstack/react-query";
 
 type TPriority = "high" | "extreme" | "moderate" | "low";
 
@@ -20,10 +21,11 @@ export default function TodoCard({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dragProps?: any;
 }) {
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
+  const [isOpenTodoDeleteModal, setIsOpenTodoDeleteModal] = useState(false);
+  const [isOpenEditTodoModal, setIsOpenEditTodoModal] = useState(false);
 
   const { mutate: deleteTodo } = useDeleteTodo();
+  const queryClient = useQueryClient();
 
   const priorityColors: Record<TPriority, string> = {
     high: "bg-red-100 text-red-600",
@@ -35,8 +37,10 @@ export default function TodoCard({
   const handleDelete = () => {
     deleteTodo(todo.id, {
       onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [QK_ALL_TODOS] });
+
         toast.success("Todo deleted successfully");
-        setOpenDelete(false);
+        setIsOpenTodoDeleteModal(false);
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError: (err: any) => {
@@ -78,14 +82,18 @@ export default function TodoCard({
                   day: "numeric",
                   year: "numeric",
                 }).format(new Date(todo.todo_date))}`
-              : "No due date"}
+              : `Due ${new Intl.DateTimeFormat("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                }).format(new Date(todo.updated_at))}`}
           </p>
 
           <div className="flex items-center gap-3">
             {/* STOP PROPAGATION so drag doesn't effect to open delete & edit modal opening */}
             <button
               onPointerDown={(e) => e.stopPropagation()}
-              onClick={() => setOpenEdit(true)}
+              onClick={() => setIsOpenEditTodoModal(true)}
               className="bg-gray-50 p-1.5 cursor-pointer rounded-lg text-[#4F46E5]"
             >
               <LuPencilLine size={20} />
@@ -93,7 +101,7 @@ export default function TodoCard({
 
             <button
               onPointerDown={(e) => e.stopPropagation()}
-              onClick={() => setOpenDelete(true)}
+              onClick={() => setIsOpenTodoDeleteModal(true)}
               className="bg-gray-50 p-1.5 cursor-pointer rounded-lg text-[#DC2626]"
             >
               <MdOutlineDeleteOutline size={20} />
@@ -104,15 +112,15 @@ export default function TodoCard({
 
       {/* Delete Modal */}
       <DeleteTodoModal
-        open={openDelete}
-        onClose={() => setOpenDelete(false)}
+        open={isOpenTodoDeleteModal}
+        onClose={() => setIsOpenTodoDeleteModal(false)}
         onConfirm={handleDelete}
       />
 
       {/* Edit Modal */}
       <EditTodoModal
-        open={openEdit}
-        onClose={() => setOpenEdit(false)}
+        open={isOpenEditTodoModal}
+        onClose={() => setIsOpenEditTodoModal(false)}
         todo={todo}
       />
     </>

@@ -5,7 +5,6 @@ import { RiNotification3Line } from "react-icons/ri";
 import { SlCalender } from "react-icons/sl";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 import Link from "next/link";
-
 export default function TopBar({ openSidebar }: { openSidebar?: () => void }) {
   const today = new Date();
 
@@ -13,7 +12,7 @@ export default function TopBar({ openSidebar }: { openSidebar?: () => void }) {
     <nav className="bg-white w-full px-6 sm:px-10 lg:px-17">
       <div className="flex items-center justify-between">
         <button
-          className="lg:hidden text-gray-700 text-3xl"
+          className="lg:hidden text-gray-700 cursor-pointer text-3xl"
           onClick={openSidebar}
         >
           <HiOutlineMenuAlt2 />
@@ -25,7 +24,7 @@ export default function TopBar({ openSidebar }: { openSidebar?: () => void }) {
             height={90}
             width={90}
             alt="logo"
-            className="object-contain"
+            className="object-cover"
           />
         </Link>
 

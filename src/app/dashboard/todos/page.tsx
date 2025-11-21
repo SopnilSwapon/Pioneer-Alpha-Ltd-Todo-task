@@ -27,7 +27,7 @@ import { Heading1 } from "@/components/ui/Header1";
 import AddTodoModal from "@/components/ui/todos/AddTodoModal";
 import TodoCard from "@/components/ui/todos/TodoCard";
 import TodoSkeleton from "@/components/ui/todos/TodoSkeloton";
-import useAllTodos, { ITodo } from "@/hooks/useAllTask";
+import useAllTodos, { ITodo } from "@/hooks/todos/useAllTask";
 
 function SortableTodoCard({ todo }: { todo: ITodo }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -79,7 +79,7 @@ export default function TodosPage() {
       return arrayMove(items, oldIndex, newIndex);
     });
   };
-
+  console.log(data, "check todos data");
   return (
     <div>
       <div className="flex justify-between items-center">

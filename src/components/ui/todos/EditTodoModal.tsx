@@ -13,8 +13,9 @@ import { toast } from "react-toastify";
 import Button from "../Button";
 import Input from "../Input";
 import { Heading1 } from "../Header1";
-import { useUpdateTodo } from "@/hooks/useUpdateTodo";
-import { ITodo } from "@/hooks/useAllTask";
+import { useUpdateTodo } from "@/hooks/todos/useUpdateTodo";
+import { ITodo, QK_ALL_TODOS } from "@/hooks/todos/useAllTask";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface IProps {
   open: boolean;
@@ -26,6 +27,7 @@ type TEditTodoForm = Omit<ITodo, "id">;
 
 export default function EditTodoModal({ open, onClose, todo }: IProps) {
   const { mutate, isPending } = useUpdateTodo();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -34,7 +36,7 @@ export default function EditTodoModal({ open, onClose, todo }: IProps) {
     formState: { errors },
   } = useForm<TEditTodoForm>();
 
-  // Prefill fields when opening modal
+  // Prefill fields by current values when opening modal
   useEffect(() => {
     if (todo) {
       setValue("title", todo.title);
@@ -52,6 +54,7 @@ export default function EditTodoModal({ open, onClose, todo }: IProps) {
       },
       {
         onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: [QK_ALL_TODOS] });
           toast.success("Todo updated successfully!");
           onClose();
         },

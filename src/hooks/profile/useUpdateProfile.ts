@@ -1,18 +1,15 @@
 "use client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import {
   updateProfile,
   IUpdateProfilePayload,
 } from "@/shared/lib/profile/updateProfile";
 import { TFetchError } from "@/shared/lib/Fetch";
 import { UseFormSetError } from "react-hook-form";
-import { QK_USER_PROFILE_INFO } from "./useGetProfileInfo";
 
 export function useUpdateProfile(
   setError: UseFormSetError<IUpdateProfilePayload>
 ) {
-  const queryClient = useQueryClient();
-
   return useMutation<IUpdateProfilePayload, TFetchError, IUpdateProfilePayload>(
     {
       mutationFn: updateProfile,
@@ -66,10 +63,6 @@ export function useUpdateProfile(
         if (error.message && !hasFocused) {
           console.error("Backend error:", error.message);
         }
-      },
-
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [QK_USER_PROFILE_INFO] });
       },
     }
   );
