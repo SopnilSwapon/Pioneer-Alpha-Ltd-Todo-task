@@ -25,7 +25,7 @@ export default function Sidebar({ closeMobile }: { closeMobile?: () => void }) {
   ];
 
   return (
-    <div className="w-64 h-full bg-[#0D224A] flex flex-col">
+    <div className="w-[340px] h-full bg-[#0D224A] flex flex-col">
       {/* Avatar & User Info */}
       <div className="py-5 px-3">
         <div className="flex flex-col items-center mt-10">

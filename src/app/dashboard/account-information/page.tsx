@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-
-import { useUpdateProfile } from "@/hooks/useUpdateProfile";
-import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { FaCamera, FaUpload } from "react-icons/fa6";
+
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
+import { useUpdateProfile } from "@/hooks/useUpdateProfile";
+import useGetProfileInfo from "@/hooks/useGetProfileInfo"; // <-- ADD THIS
 
 interface IProfileForm {
   first_name: string;
@@ -24,7 +26,9 @@ interface IProfileForm {
 export default function Page() {
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
+
   const router = useRouter();
+  const { data: profile } = useGetProfileInfo();
 
   const {
     register,
@@ -36,9 +40,25 @@ export default function Page() {
 
   const mutation = useUpdateProfile(setError);
 
+  //  Set default values by current user profile data
+  useEffect(() => {
+    if (!profile) return;
+
+    reset({
+      first_name: profile.first_name || "",
+      last_name: profile.last_name || "",
+      email: profile.email || "",
+      address: profile.address || "",
+      contact_number: profile.contact_number || "",
+      birthday: profile.birthday || "",
+      bio: profile.bio || "",
+    });
+  }, [profile, reset]);
+
   function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = e.target.files?.[0];
     if (!selected?.name) return;
+
     setFile(selected);
     setPreview(URL.createObjectURL(selected));
   }
@@ -56,7 +76,6 @@ export default function Page() {
         },
         onSuccess: () => {
           toast.success("Profile updated successfully");
-          reset();
           router.push("/dashboard");
         },
       }
@@ -64,34 +83,55 @@ export default function Page() {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-4 md:p-6">
-      <h2 className="text-xl font-semibold mb-6">Account Information</h2>
+    <div className="bg-white rounded-2xl p-4 md:p-7 sm:mx-4 lg:mx-11">
+      <h2 className="text-xl md:text-2xl font-semibold mb-6 text-[#0D224A]">
+        Account Information
+      </h2>
 
       {/* Profile Photo */}
-      <div className="flex items-center gap-6 mb-8">
-        <div className="relative w-32 h-32 bg-gray-300 rounded-full overflow-hidden">
+      <div className="flex flex-col sm:flex-row items-center relative gap-6 mb-8 border rounded-2xl p-4 border-[#A1A3ABA1] md:p-6 max-w-[414px]">
+        <div className="w-32 h-32 bg-gray-300 rounded-full overflow-hidden relative">
           {preview ? (
-            <Image src={preview} fill alt="Profile" className="object-cover" />
+            <Image
+              src={preview}
+              alt="Profile"
+              fill
+              className="object-cover rounded-full"
+            />
+          ) : profile?.profile_image ? (
+            <Image
+              src={profile.profile_image}
+              alt="Profile"
+              fill
+              className="object-cover"
+            />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-500">
+            <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
               No Image
             </div>
           )}
+
+          <label className="absolute bottom-1 right-1 bg-[#5272FF] p-2 rounded-full text-white cursor-pointer">
+            {!profile?.profile_image && <FaCamera size={16} />}
+            <input
+              type="file"
+              className="hidden"
+              onChange={handleImageSelect}
+            />
+          </label>
         </div>
 
         <label className="cursor-pointer px-5 py-2 rounded-md bg-[#5272FF] hover:bg-blue-600 text-white flex items-center gap-2">
-          Upload New Photo
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImageSelect}
-          />
+          <FaUpload /> Upload New Photo
+          <input type="file" className="hidden" onChange={handleImageSelect} />
         </label>
       </div>
 
-      {/*Profile information update form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {/* Profile Form */}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-6 border rounded-2xl p-4 border-[#A1A3ABA1] md:p-6"
+      >
         <div className="grid grid-cols-2 gap-4">
           <Input
             label="First Name"
@@ -139,14 +179,14 @@ export default function Page() {
 
         <Input label="Bio" error={errors.bio?.message} {...register("bio")} />
 
-        <div className="flex justify-center  gap-4 mt-6">
+        <div className="flex justify-center gap-4 mt-6">
           <Button className="max-w-44" loading={mutation.isPending}>
             Save Changes
           </Button>
 
           <Link
-            href={"/dashboard"}
-            className="w-44 p-2 text-center text-white cursor-pointer rounded-md bg-gray-400 hover:bg-gray-500"
+            href="/dashboard"
+            className="w-44 p-2 text-center text-white rounded-md bg-gray-400 hover:bg-gray-500"
           >
             Cancel
           </Link>

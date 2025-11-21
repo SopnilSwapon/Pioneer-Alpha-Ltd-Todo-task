@@ -13,10 +13,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <aside
         className={`
           bg-[#0d2340]
-          fixed md:static 
+          fixed lg:static 
           h-full z-50 
           transition-all duration-300
-          ${isOpen ? "w-64 left-0" : "w-0 -left-64 md:w-64"}
+          ${isOpen ? "w-[340px] left-0" : "w-0 -left-[340px] md:w-[340px]"}
         `}
       >
         <Sidebar closeMobile={() => setIsOpen(false)} />
@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <div className="flex flex-col flex-1 h-full overflow-hidden">
         {/* Top bar */}
-        <header className="h-16 bg-white flex items-center shadow-sm">
+        <header className="h-22 bg-white flex items-center shadow-sm">
           <TopBar openSidebar={() => setIsOpen(true)} />
         </header>
 
@@ -37,7 +37,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 md:hidden"
+          className="fixed inset-0 bg-black/40 lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
