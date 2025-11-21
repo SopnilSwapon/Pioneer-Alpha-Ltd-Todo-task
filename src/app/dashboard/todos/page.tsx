@@ -132,16 +132,18 @@ export default function TodosPage() {
               ))}
 
             {!isLoading && todoList.length === 0 && (
-              <div
-                onClick={() => setOpen(true)}
-                className="col-span-full cursor-pointer h-72 pt-10 flex items-center justify-center text-gray-500"
-              >
+              <div className="col-span-full row-span-full h-[calc(100vh-222px)] flex flex-col items-center justify-center text-gray-500">
                 <Image
                   src="/images/icon-noTodo.png"
+                  onClick={() => setOpen(true)}
                   height={200}
                   width={200}
+                  className="cursor-pointer"
                   alt="No todos"
                 />
+                <h1 className="text-xl mt-4 md:text-2xl text-[#201F1E]">
+                  No Todos Yet
+                </h1>
               </div>
             )}
           </div>
